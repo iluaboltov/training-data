@@ -3,33 +3,31 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Queue;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.PriorityQueue;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * Клас BasicDataOperationUsingQueue надає методи для виконання основних операцiй з даними типу LocalDateTime.
+ * Клас BasicDataOperationUsingList надає методи для виконання основних операцiй з даними типу double.
  * 
- * <p>Цей клас зчитує данi з файлу "list/LocalDateTime.data", сортує їх та виконує пошук значення в масивi та черзi.</p>
+ * <p>Цей клас зчитує данi з файлу "list/double.data", сортує їх та виконує пошук значення в масивi та списку.</p>
  * 
  * <p>Основнi методи:</p>
  * <ul>
  *   <li>{@link #main(String[])} - Точка входу в програму.</li>
  *   <li>{@link #doDataOperation()} - Виконує основнi операцiї з даними.</li>
- *   <li>{@link #sortArray()} - Сортує масив LocalDateTime.</li>
- *   <li>{@link #searchArray()} - Виконує пошук значення в масивi LocalDateTime.</li>
- *   <li>{@link #findMinAndMaxInArray()} - Знаходить мiнiмальне та максимальне значення в масивi LocalDateTime.</li>
- *   <li>{@link #searchQueue()} - Виконує пошук значення в черзi LocalDateTime.</li>
- *   <li>{@link #findMinAndMaxInQueue()} - Знаходить мiнiмальне та максимальне значення в черзi LocalDateTime.</li>
- *   <li>{@link #peekAndPollQueue()} - Виконує операцiї peek та poll з чергою LocalDateTime.</li>
+ *   <li>{@link #sortArray()} - Сортує масив double.</li>
+ *   <li>{@link #searchArray()} - Виконує пошук значення в масивi double.</li>
+ *   <li>{@link #findMinAndMaxInArray()} - Знаходить мiнiмальне та максимальне значення в масивi double.</li>
+ *   <li>{@link #sortList()} - Сортує список double.</li>
+ *   <li>{@link #searchList()} - Виконує пошук значення в списку double.</li>
+ *   <li>{@link #findMinAndMaxInList()} - Знаходить мiнiмальне та максимальне значення в списку double.</li>
  * </ul>
  * 
  * <p>Конструктор:</p>
  * <ul>
- *   <li>{@link #BasicDataOperationUsingQueue(String[])} - iнiцiалiзує об'єкт з значенням для пошуку.</li>
+ *   <li>{@link #BasicDataOperationUsingList(String[])} - iнiцiалiзує об'єкт з значенням для пошуку.</li>
  * </ul>
  * 
  * <p>Константи:</p>
@@ -39,28 +37,28 @@ import java.util.PriorityQueue;
  * 
  * <p>Змiннi екземпляра:</p>
  * <ul>
- *   <li>{@link #dateTimeValueToSearch} - Значення LocalDateTime для пошуку.</li>
- *   <li>{@link #dateTimeArray} - Масив LocalDateTime.</li>
- *   <li>{@link #dateTimeQueue} - Черга LocalDateTime.</li>
+ *   <li>{@link #doubleValueToSearch} - Значення double для пошуку.</li>
+ *   <li>{@link #doubleArray} - Масив double.</li>
+ *   <li>{@link #doubleList} - Список double.</li>
  * </ul>
  * 
  * <p>Приклад використання:</p>
  * <pre>
  * {@code
- * java BasicDataOperationUsingQueue "2024-03-16T00:12:38Z"
+ * java BasicDataOperationUsingList "-3.210E+156"
  * }
  * </pre>
  */
-public class BasicDataOperationUsingQueue {
-    static final String PATH_TO_DATA_FILE = "list/LocalDateTime.data";
+public class BasicDataOperationUsingList {
+    static final String PATH_TO_DATA_FILE = "./list/double.data";
 
-    LocalDateTime dateTimeValueToSearch;
-    LocalDateTime[] dateTimeArray;
-    Queue<LocalDateTime> dateTimeQueue;
+    double doubleValueToSearch;
+    double[] doubleArray;
+    List<Double> doubleList;
 
     public static void main(String[] args) {  
-        BasicDataOperationUsingQueue basicDataOperationUsingQueue = new BasicDataOperationUsingQueue(args);
-        basicDataOperationUsingQueue.doDataOperation();
+        BasicDataOperationUsingList basicDataOperationUsingList = new BasicDataOperationUsingList(args);
+        basicDataOperationUsingList.doDataOperation();
     }
 
     /**
@@ -68,101 +66,98 @@ public class BasicDataOperationUsingQueue {
      * 
      * @param args Аргументи командного рядка, де перший аргумент - значення для пошуку.
      */
-    BasicDataOperationUsingQueue(String[] args) {
+    BasicDataOperationUsingList(String[] args) {
         if (args.length == 0) {
             throw new RuntimeException("Вiдсутнє значення для пошуку");
         }
 
-        String valueToSearch = args[0];
-        this.dateTimeValueToSearch = LocalDateTime.parse(valueToSearch, DateTimeFormatter.ISO_DATE_TIME);
+        String searchValue = args[0];
+        doubleValueToSearch = Double.parseDouble(searchValue);
 
-        dateTimeArray = Utils.readArrayFromFile(PATH_TO_DATA_FILE);
-
-        dateTimeQueue = new PriorityQueue<>(Arrays.asList(dateTimeArray));
+        doubleArray = Utils.readArrayFromFile(PATH_TO_DATA_FILE);
+        doubleList = new LinkedList<>();
+        for (double value : doubleArray) {
+            doubleList.add(value);
+        }
     }
 
     /**
      * Виконує основнi операцiї з даними.
      * 
-     * Метод зчитує масив та чергу об'єктiв LocalDateTime з файлу, сортує їх та виконує пошук значення.
+     * Метод зчитує масив та список об'єктiв double з файлу, сортує їх та виконує пошук значення.
      */
-    private void doDataOperation() {
-        // операцiї з масивом дати та часу
+    void doDataOperation() {
+        // операцiї з масивом
         searchArray();
         findMinAndMaxInArray();
 
         sortArray();
-
+        
         searchArray();
         findMinAndMaxInArray();
 
-        // операцiї з Queue дати та часу
-        searchQueue();
-        findMinAndMaxInQueue();
-        peekAndPollQueue();
+        // операцiї з LinkedList
+        searchList();
+        findMinAndMaxInList();
+
+        sortList();
+
+        searchList();
+        findMinAndMaxInList();
 
         // записати вiдсортований масив в окремий файл
-        Utils.writeArrayToFile(dateTimeArray, PATH_TO_DATA_FILE + ".sorted");
+        Utils.writeArrayToFile(doubleArray, PATH_TO_DATA_FILE + ".sorted");
     }
 
     /**
-     * Сортує масив об'єктiв LocalDateTime та виводить початковий i вiдсортований масиви.
+     * Сортує масив об'єктiв double та виводить початковий i вiдсортований масиви.
      * Вимiрює та виводить час, витрачений на сортування масиву в наносекундах.
-     * 
-     * Метод виконує наступнi кроки:
-     * <li>1. Виводить початковий масив об'єктiв LocalDateTime.</li>
-     * <li>2. Вимiрює час, витрачений на сортування масиву за допомогою Arrays.sort().</li>
-     * <li>3. Виводить час, витрачений на сортування масиву в наносекундах.</li>
-     * <li>4. Виводить вiдсортований масив об'єктiв LocalDateTime.</li>
      */
-    private void sortArray() {
-        // вимiрюємо час, витрачений на сортування масиву дати i часу 
+    void sortArray() {
         long startTime = System.nanoTime();
 
-        Arrays.sort(dateTimeArray);
+        Arrays.sort(doubleArray);
 
-        Utils.printOperationDuration(startTime, "сортування масиву дати i часу");
+        Utils.printOperationDuration(startTime, "сортування масиву double");
     }
 
     /**
-     * Метод для пошуку значення в масивi дати i часу.
+     * Метод для пошуку значення в масивi double.
      */
-    private void searchArray() {
-        // вимiрюємо час, витрачений на пошук в масивi дати i часу
+    void searchArray() {
         long startTime = System.nanoTime();
-        
-        int index = Arrays.binarySearch(this.dateTimeArray, dateTimeValueToSearch);
-        
-        Utils.printOperationDuration(startTime, "пошук в масивi дати i часу");
+
+        int index = Arrays.binarySearch(this.doubleArray, doubleValueToSearch);
+
+        Utils.printOperationDuration(startTime, "пошук в масивi double");
 
         if (index >= 0) {
-            System.out.println("Значення '" + dateTimeValueToSearch + "' знайдено в масивi за iндексом: " + index);
+            System.out.println("Значення '" + doubleValueToSearch + "' знайдено в масивi за iндексом: " + index);
         } else {
-            System.out.println("Значення '" + dateTimeValueToSearch + "' в масивi не знайдено.");
+            System.out.println("Значення '" + doubleValueToSearch + "' в масивi не знайдено.");
         }
     }
 
     /**
-     * Знаходить мiнiмальне та максимальне значення в масивi LocalDateTime.
+     * Знаходить мiнiмальне та максимальне значення в масивi double.
      */
-    private void findMinAndMaxInArray() {
-        if (dateTimeArray == null || dateTimeArray.length == 0) {
+    void findMinAndMaxInArray() {
+        if (doubleArray == null || doubleArray.length == 0) {
             System.out.println("Масив порожнiй або не iнiцiалiзований.");
             return;
         }
 
-        // вимiрюємо час, витрачений на пошук мiнiмальної i максимальної дати i часу
         long startTime = System.nanoTime();
 
-        LocalDateTime min = dateTimeArray[0];
-        LocalDateTime max = dateTimeArray[0];
+        double min = doubleArray[0];
+        double max = doubleArray[0];
 
-        for (LocalDateTime dateTime : dateTimeArray) {
-            if (dateTime.isBefore(min)) {
-                min = dateTime;
+        for (double doubleValue : doubleArray) {
+            if (doubleValue < min) {
+                min = doubleValue;
             }
-            if (dateTime.isAfter(max)) {
-                max = dateTime;
+            if (doubleValue > max) {
+                max = doubleValue;
             }
         }
 
@@ -173,66 +168,57 @@ public class BasicDataOperationUsingQueue {
     }
 
     /**
-     * Метод для пошуку значення в черзi дати i часу.
+     * Шукає задане значення double в LinkedList.
      */
-    private void searchQueue() {
-        // вимiрюємо час, витрачений на пошук в черзi дати i часу
+    void searchList() {
         long startTime = System.nanoTime();
 
-        boolean isFound = this.dateTimeQueue.contains(dateTimeValueToSearch);
+        int index = Collections.binarySearch(this.doubleList, doubleValueToSearch);
 
-        Utils.printOperationDuration(startTime, "пошук в Queue дати i часу");
+        Utils.printOperationDuration(startTime, "пошук в LinkedList double");
 
-        if (isFound) {
-            System.out.println("Значення '" + dateTimeValueToSearch + "' знайдено в Queue");
+        if (index >= 0) {
+            System.out.println("Значення '" + doubleValueToSearch + "' знайдено в LinkedList за iндексом: " + index);
         } else {
-            System.out.println("Значення '" + dateTimeValueToSearch + "' в Queue не знайдено.");
+            System.out.println("Значення '" + doubleValueToSearch + "' в LinkedList не знайдено.");
         }
     }
 
     /**
-     * Знаходить мiнiмальне та максимальне значення в черзi LocalDateTime.
+     * Знаходить мiнiмальне та максимальне значення в LinkedList double.
      */
-    private void findMinAndMaxInQueue() {
-        if (dateTimeQueue == null || dateTimeQueue.isEmpty()) {
-            System.out.println("Queue порожнiй або не iнiцiалiзований.");
+    void findMinAndMaxInList() {
+        if (doubleList == null || doubleList.isEmpty()) {
+            System.out.println("LinkedList порожнiй або не iнiцiалiзований.");
             return;
         }
 
-        // вимiрюємо час, витрачений на пошук мiнiмальної i максимальної дати i часу
         long startTime = System.nanoTime();
 
-        LocalDateTime min = Collections.min(dateTimeQueue);
-        LocalDateTime max = Collections.max(dateTimeQueue);
+        double min = Collections.min(doubleList);
+        double max = Collections.max(doubleList);
 
-        Utils.printOperationDuration(startTime, "пошук мiнiмальної i максимальної дати i часу в Queue");
+        Utils.printOperationDuration(startTime, "пошук мiнiмальної i максимальної дати i часу в LinkedList");
 
-        System.out.println("Мiнiмальне значення в Queue: " + min);
-        System.out.println("Максимальне значення в Queue: " + max);
+        System.out.println("Мiнiмальне значення в LinkedList: " + min);
+        System.out.println("Максимальне значення в LinkedList: " + max);
     }
 
     /**
-     * Виконує операцiї peek та poll з чергою LocalDateTime.
+     * Сортує LinkedList об'єктiв double та виводить початковий i вiдсортований список.
+     * Вимiрює та виводить час, витрачений на сортування списку в наносекундах.
      */
-    private void peekAndPollQueue() {
-        if (dateTimeQueue == null || dateTimeQueue.isEmpty()) {
-            System.out.println("Queue порожнiй або не iнiцiалiзований.");
-            return;
-        }
+    void sortList() {
+        long startTime = System.nanoTime();
 
-        LocalDateTime firstElement = dateTimeQueue.peek();
-        System.out.println("Перший елемент у черзi: " + firstElement);
+        Collections.sort(doubleList);
 
-        firstElement = dateTimeQueue.poll();
-        System.out.println("Забрати перший елемент у черзi: " + firstElement);
-
-        firstElement = dateTimeQueue.peek();
-        System.out.println("Перший елемент у черзi: " + firstElement);
+        Utils.printOperationDuration(startTime, "сортування LinkedList double");
     }
 }
 
 /**
- * Клас Utils мiститить допомiжнi методи для роботи з даними типу LocalDateTime.
+ * Клас Utils мiститить допомiжнi методи для роботи з даними типу double.
  */
 class Utils {
     /**
@@ -244,46 +230,44 @@ class Utils {
     static void printOperationDuration(long startTime, String operationName) {
         long endTime = System.nanoTime();
         long duration = (endTime - startTime);
-        System.out.println("\n>>>>>>>>>> Час виконання операцiї '" + operationName + "'': " + duration + " наносекунд");
+        System.out.println("\n>>>>>>>>> Час виконання операцiї '" + operationName + "': " + duration + " наносекунд");
     }
 
     /**
-     * Зчитує масив об'єктiв LocalDateTime з файлу.
+     * Зчитує масив об'єктiв double з файлу.
      * 
      * @param pathToFile Шлях до файлу з даними.
-     * @return Масив об'єктiв LocalDateTime.
+     * @return Масив об'єктiв double.
      */
-    static LocalDateTime[] readArrayFromFile(String pathToFile) {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-        LocalDateTime[] tempArray = new LocalDateTime[1000];
+    static double[] readArrayFromFile(String pathToFile) {
+        double[] tempArray = new double[1000];
         int index = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;
             while ((line = br.readLine()) != null) {
-                LocalDateTime dateTime = LocalDateTime.parse(line, formatter);
-                tempArray[index++] = dateTime;
+                tempArray[index++] = Double.parseDouble(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        LocalDateTime[] finalArray = new LocalDateTime[index];
+        double[] finalArray = new double[index];
         System.arraycopy(tempArray, 0, finalArray, 0, index);
 
         return finalArray;
     }
 
     /**
-     * Записує масив об'єктiв LocalDateTime у файл.
+     * Записує масив об'єктiв double у файл.
      * 
-     * @param dateTimeArray Масив об'єктiв LocalDateTime.
+     * @param doubleArray Масив об'єктiв double.
      * @param pathToFile Шлях до файлу для запису.
      */
-    static void writeArrayToFile(LocalDateTime[] dateTimeArray, String pathToFile) {
+    static void writeArrayToFile(double[] doubleArray, String pathToFile) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(pathToFile))) {
-            for (LocalDateTime dateTime : dateTimeArray) {
-                writer.write(dateTime.toString());
+            for (double value : doubleArray) {
+                writer.write(String.valueOf(value));
                 writer.newLine();
             }
         } catch (IOException e) {
